@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lane Tech Bus Tracker App</title>
+    </head>
+<body>
+        <!doctype html>
+        <html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  
+  <style>
+
+    #header{
+      text-align:center;
+    }
+    .row, #header{
+      border:2px solid black;
+    }
+  </style>
+  
+</head>
+<body>
+      <div id="header"></div>
+      
+    <div class="row">
+      <div class="col-md-4" id="r152"><h2>Addison</h2></div>
+      <div class="col-md-4" id="r49"><h2>Western</h2></div>
+      <div class="col-md-4" id="rX49"><h2>Western Express</h2></div>
+    </div>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script>
+        /* global $ */
+      
+        $(function() {
+          
+         
+          var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+          
+          var apiEndpoint = "http://www.ctabustracker.com/bustime/api/v2/getpredictions";
+
+
+          $.ajax({
+              url: apiPassThruUrl,
+              dataType: "json",
+              method: 'GET',
+              data: {"apiEndpoint": apiEndpoint,
+                      "key" : "3FFG56uPzZHaVCK5uPKii72AM",
+                      "rt" : "X49,49,152",
+                      "stpid" : "8417,8195,12527,12569",
+                      "format":"json"}
+            }).done (function (data) {
+              console.log(data);
+              $("#header").append("<h1><b>Bus Routes</b></h1>");
+             
+              $.each(data["bustime-response"]["prd"], function(index, value) {
+                  $("#r"+ value.rt).append("Route #" 
+                                    + value.rt + ", " 
+                                    + value.rtdir + " to " 
+                                    + value.des + ": " 
+                                    + value.prdctdn + "<br><br>");
+                
+              });
+
+            });
+        });
+            
+  
+</script>
+ 
+</body>
+</html>
+    </body>
+</html>
