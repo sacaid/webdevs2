@@ -17,23 +17,39 @@
   <style>
 
     #header{
+      color:#FFD700;
       text-align:center;
+      padding-top:10px;
+      padding-bottom:10px;
     }
-    .row, #header{
-      border:2px solid black;
+    
+    header{
+      background-color:#21421e;
+    }
+    footer{
+      background-color:#FFD700;
+      height:75px;
+      width:100%;
     }
   </style>
   
 </head>
 <body>
-      <div id="header"></div>
+  
+    <header id="header">
+    <h1><img src="https://cdn.evbuc.com/eventlogos/31681757/lanetechlogo.png" alt="Lane Tech Logo" style="width:60px;height:70px;">
+     <b>Lane Tech Bus Routes</b>
+      <img src="https://cdn.evbuc.com/eventlogos/31681757/lanetechlogo.png" alt="Lane Tech Logo" style="width:60px;height:70px;"></h1>
+    </header>
       
     <div class="row">
       <div class="col-md-4" id="r152"><h2>Addison</h2></div>
       <div class="col-md-4" id="r49"><h2>Western</h2></div>
       <div class="col-md-4" id="rX49"><h2>Western Express</h2></div>
     </div>
-
+    
+    <footer></footer>
+    
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script>
         /* global $ */
@@ -57,14 +73,30 @@
                       "format":"json"}
             }).done (function (data) {
               console.log(data);
-              $("#header").append("<h1><b>Bus Routes</b></h1>");
              
               $.each(data["bustime-response"]["prd"], function(index, value) {
-                  $("#r"+ value.rt).append("Route #" 
+                  if (value.prdctdn === "DUE") {
+                     $("#r"+ value.rt).append("Route #" 
                                     + value.rt + ", " 
                                     + value.rtdir + " to " 
                                     + value.des + ": " 
-                                    + value.prdctdn + "<br><br>");
+                                    + value.prdctdn + "<hr>");
+                  }
+                  else if (value.prdctdn === "DLY"){
+                      $("#r"+ value.rt).append("Route #" 
+                                    + value.rt + ", " 
+                                    + value.rtdir + " to " 
+                                    + value.des + ": " 
+                                    + "Delayed" + "<hr>");
+                  }
+                  
+                  else{
+                    $("#r"+ value.rt).append("Route #" 
+                                    + value.rt + ", " 
+                                    + value.rtdir + " to " 
+                                    + value.des + ": " 
+                                    + value.prdctdn + " mins" + "<hr>");
+                  }
                 
               });
 
