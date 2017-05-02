@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Material Design Lite -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <style>
+        
+        .screen{display:none;}
+        
+        
+    </style>
+    
+  </head>
+  <body>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">Favorite Team's Scores</span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation. We hide it in small screens. -->
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a id="tigersLink" class="mdl-navigation__link" href="#">Tigers</a>
+            <a id="cubsLink" class="mdl-navigation__link" href="#">Cubs</a>
+            <a id="giantsLink" class="mdl-navigation__link" href="#">Giants</a>
+          </nav>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title"><b>Favorite Team's Scores</b></span>
+        <nav class="mdl-navigation">
+          <a id="tigersLinkMobile" class="mdl-navigation__link" href="#">Tigers</a>
+          <a id="cubsLinkMobile" class="mdl-navigation__link" href="#">Cubs</a>
+          <a id="giantsLinkMobile" class="mdl-navigation__link" href="#">Giants</a>
+        </nav>
+      </div>
+      <main class="mdl-layout__content">
+        <div id= "tigers" class="screen page-content"></div>
+        <div id= "cubs" class="screen page-content"></div>
+        <div id= "giants" class="screen page-content"></div>
+      </main>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        /* global $ */
+    
+        $(function() {
+         
+          var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+          
+          var apiEndpoint = "http://api.sportradar.us/mlb-t6/games/2017/03/20/boxscore.json";
+          
+       /* var d = new Date();
+        
+        var year = d.getFullYear();
+          var month = d.getMonth() + 1;
+          var day = d.getDate();
+
+          if (month.toString().length == 1)
+    	        //month = "0" + month;
+
+          if (day.toString().length == 1)
+    	        day = "0" + day; */
+
+          $.ajax({
+              url: apiPassThruUrl,
+              dataType: "json",
+              method: 'GET',
+              data: {"apiEndpoint": apiEndpoint,
+                      "api_key" : "649pufhbe7zwmuqyaupe5apb"}
+                      
+            }).done (function (data) {
+              console.log(data);
+  
+            $.each(data["league"]["games"], function(index, value) {
+                    var game = value.game;
+                    console.log(game.away_team, game.home_team);
+                     if (game.away_team === "575c19b7-4052-41c2-9f0a-1c5813d02f99" || game.home_team === "575c19b7-4052-41c2-9f0a-1c5813d02f99") {
+                       $("#tigers").append( game.home.market 
+                                            + " " + game.home.name
+                                            + ": " + game.home.runs
+                                            + "<br>"
+                                            + game.away.market 
+                                            + " " + game.away.name
+                                            + ": " + game.away.runs);
+                       }
+                  });
+          
+          $("#screen1").show();
+          
+          $("#tigersLink, #tigersLinkMobile").on("click",function() {
+              $(".screen").hide();
+              $("#tigers").show();
+          });
+          
+          $("#cubsLink, #cubsLinkMobile").on("click",function() {
+              $(".screen").hide();
+              $("#cubs").show();
+          });
+          
+          $("#giantsLink, #giantsLinkMobile").on("click",function() {
+              $(".screen").hide();
+              $("#giants").show();
+          });
+          
+        });
+        
+      });
+        
+    </script>
+    
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "short_name": "Scores",
+  "name": "Favorite Teams' Scores ",
+  "icons": [
+    {
+      "src":"wrigley-field-scoreboard.gif",
+      "sizes": "192x192",
+      "type": "image/gif"
+    }
+  ],
+  "start_url": "index.html?utm_source=homescreen",
+  "background_color": "#000",
+  "Theme_color": "#536878",
+  "display": "standalone"
+}
