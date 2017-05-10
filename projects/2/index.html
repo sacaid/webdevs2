@@ -173,17 +173,31 @@
             <head>
               <meta charset="utf-8">
               <meta name="viewport" content="width=device-width">
-              <title>repl.it</title>
+              <title>Add Personal Bus Routes</title>
               <link href="index.css" rel="stylesheet" type="text/css" />
               <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
             </head>
 
             <body>
-              <p><b>Select a Route:</b></p> <select id="route"></select>
-              <p><b>Select a Direction:</b></p> <select id="direction"></select>
-              <p><b>Select a Stop:</b></p> <select id="stop"></select>
+
+              <div class="row">
+                <div class="col-md-4" id="routeColumn">
+                  <h2>Select a Route</h2>
+                  <select id="route"></select>
+                </div>
+                <div class="col-md-4" id="directionColumn">
+                  <h2>Select a Direction</h2>
+                  <select id="direction"></select>
+                </div>
+                <div class="col-md-4" id="stopColumn">
+                  <h2>Select a Stop</h2>
+                  <select id="stop"></select>
+                </div>
+              </div>
+
 
               <script>
+              
                 $(function() {
 
                   /* global $ */
@@ -222,13 +236,86 @@
 
 
                   $("#route").on("change", function() {
+
+                    $("#direction option").remove();
                     // get the value
-                    var routeId = $("#route").val();
-                    // use that value to get the directions for that route
-                    alert(routeId);
+
+                    var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+
+                    var apiEndpoint = "http://ctabustracker.com/bustime/api/v2/getdirections";
+
+
+                    $.ajax({
+                      url: apiPassThruUrl,
+                      dataType: "json",
+                      method: 'GET',
+                      data: {
+                        "apiEndpoint": apiEndpoint,
+                        "key": "3FFG56uPzZHaVCK5uPKii72AM",
+                        "format": "json",
+                        "rt": $("#route").val()
+                      }
+                    }).done(function(data) {
+                      console.log(data);
+
+                      $.each(data["bustime-response"]["directions"], function(index, value) {
+                        //$("body").append("Route #" + v.rt + ", " + v.rtnm + "<br>");
+
+                        var option = $("<option>");
+                        option.attr("value", value.dir);
+                        option.text(value.dir);
+                        $("#direction").append(option);
+
+
+                      });
+
+                    });
+
+                  });
+
+
+                  $("#direction").on("change", function() {
+
+                    $("#stop option").remove();
+                    // get the value
+
+                    var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+
+                    var apiEndpoint = "http://ctabustracker.com/bustime/api/v2/getstops";
+
+
+                    $.ajax({
+                      url: apiPassThruUrl,
+                      dataType: "json",
+                      method: 'GET',
+                      data: {
+                        "apiEndpoint": apiEndpoint,
+                        "key": "3FFG56uPzZHaVCK5uPKii72AM",
+                        "format": "json",
+                        "rt": $("#route").val(),
+                        "dir": $("#direction").val()
+                      }
+                    }).done(function(data) {
+                      console.log(data);
+
+                      $.each(data["bustime-response"]["stops"], function(index, value) {
+                        //$("body").append("Route #" + v.rt + ", " + v.rtnm + "<br>");
+
+                        var option = $("<option>");
+                        option.attr("value", value.stpnm);
+                        option.text(value.stpnm);
+                        $("#stop").append(option);
+
+
+                      });
+
+                    });
+
                   });
 
                 });
+                
+                
               </script>
 
 
