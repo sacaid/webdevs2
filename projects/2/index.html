@@ -63,7 +63,7 @@
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
           <a href="#fixed-tab-1" class="mdl-layout__tab is-active">Lane Tech Bus Routes</a>
-          <a href="#fixed-tab-2" class="mdl-layout__tab">Tab 2</a>
+          <a href="#fixed-tab-2" class="mdl-layout__tab">Your Personal Bus Routes</a>
           <a href="#fixed-tab-3" class="mdl-layout__tab">Add Your Own Route</a>
         </div>
       </header>
@@ -96,6 +96,8 @@
             <footer></footer>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+
             <script>
               /* global $ */
 
@@ -184,6 +186,7 @@
                 <div class="col-md-4" id="routeColumn">
                   <h2>Select a Route</h2>
                   <select id="route"></select>
+
                 </div>
                 <div class="col-md-4" id="directionColumn">
                   <h2>Select a Direction</h2>
@@ -197,10 +200,10 @@
 
 
               <script>
-              
                 $(function() {
 
                   /* global $ */
+                  /* global Dexie */
 
                   var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
 
@@ -220,8 +223,11 @@
                     console.log(data);
                     $("body").append("<h1>Bus Routes</h1>");
 
+                    var option = $("<option>");
+                    option.text("Choose a Route");
+                    $("#route").append(option);
+
                     $.each(data["bustime-response"]["routes"], function(index, value) {
-                      //$("body").append("Route #" + v.rt + ", " + v.rtnm + "<br>");
 
                       var option = $("<option>");
                       option.attr("value", value.rt);
@@ -258,8 +264,11 @@
                     }).done(function(data) {
                       console.log(data);
 
+                      var option = $("<option>");
+                      option.text("Choose a Direction");
+                      $("#direction").append(option);
+
                       $.each(data["bustime-response"]["directions"], function(index, value) {
-                        //$("body").append("Route #" + v.rt + ", " + v.rtnm + "<br>");
 
                         var option = $("<option>");
                         option.attr("value", value.dir);
@@ -298,8 +307,11 @@
                     }).done(function(data) {
                       console.log(data);
 
+                      var option = $("<option>");
+                      option.text("Choose a Stop");
+                      $("#stop").append(option);
+
                       $.each(data["bustime-response"]["stops"], function(index, value) {
-                        //$("body").append("Route #" + v.rt + ", " + v.rtnm + "<br>");
 
                         var option = $("<option>");
                         option.attr("value", value.stpnm);
@@ -312,9 +324,26 @@
                     });
 
                   });
+                  
+                  
+                var db = new Dexie("personalRoutes");
+                  db.version(1).stores({
+                  routes: '++id,rt,rtnm,dir,stpid,stpnm'
+                 
+                });
+                  
+                db.personalRoutes.add({
+		              rt: $("#route").val(),
+		              rtnm: "",
+		              dir: $("#direction").val(),
+		              stpid: "",
+		              stpnm: $("#stop").val()
+               	});
+                  
+                  
+                  
 
                 });
-                
                 
               </script>
 
